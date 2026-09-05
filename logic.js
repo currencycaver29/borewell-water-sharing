@@ -1,272 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Borewell Water Sharing Board</title>
-  <style>
-    :root {
-      --bg: #f6f8f4;
-      --card-bg: #ffffff;
-      --text: #17352b;
-      --text-light: #6b7d74;
-      --accent: #247a5a;
-      --accent-dark: #18543e;
-      --green: #2e9b68;
-      --yellow: #d8922d;
-      --red: #c94c4c;
-      --border: #dce7df;
-      --soft: #eaf3ed;
-    }
-    * { box-sizing: border-box; }
-    body {
-    background-image: linear-gradient(rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.6)), url('background.jpg') !important;
-    background-size: cover !important;
-    background-position: center !important;
-    background-attachment: fixed !important;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
-      background: radial-gradient(circle at top right, #e7f2e9 0, var(--bg) 34rem);
-      color: var(--text); margin: 0; padding: 0 0 92px; overflow-x: hidden;
-    }
-    header { background: var(--accent-dark); color: white; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 8px 24px rgba(24,84,62,.18); }
-    header h1 { font-size: 19px; margin: 0; font-weight: 750; letter-spacing: -.02em; }
-    .settings-btn { background: transparent; border: 0; color: white; font-size: 22px; cursor: pointer; padding: 4px; }
-    #app-content { padding: 24px 16px; max-width: 680px; margin: 0 auto; }
-    #bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(255,255,255,.96); backdrop-filter: blur(14px); display: flex; justify-content: space-around; padding: 11px 0 15px; border-top: 1px solid var(--border); z-index: 100; box-shadow: 0 -8px 24px rgba(23,53,43,.08); }
-    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-light); text-decoration: none; font-size: 12px; font-weight: 650; cursor: pointer; position: relative; flex: 1; gap: 3px; }
-    .nav-item.active { color: var(--accent); }
-    .nav-icon { font-size: 21px; line-height: 1; filter: saturate(.8); }
-    .nav-badge { position: absolute; top: -7px; right: 18px; background: var(--red); color: white; border-radius: 99px; min-width: 18px; padding: 2px 5px; font-size: 10px; font-weight: 800; text-align: center; }
-    .card, .summary-card, .slot-item { background: var(--card-bg); border: 1px solid var(--border); box-shadow: 0 8px 24px rgba(31,70,52,.06); }
-    .card { border-radius: 18px; padding: 22px; margin-bottom: 16px; }
-    h2 { font-size: 27px; line-height: 1.15; margin: 0 0 14px; letter-spacing: -.035em; } h3 { font-size: 17px; margin: 0 0 12px; }
-    button { background: var(--accent); color: white; border: 0; border-radius: 11px; padding: 15px 16px; font-size: 16px; font-weight: 750; cursor: pointer; width: 100%; margin-top: 10px; box-shadow: 0 5px 12px rgba(36,122,90,.18); transition: transform .2s, filter .2s; }
-    button:hover { filter: brightness(1.05); transform: translateY(-1px); } button:active { transform: translateY(1px); } button:disabled { background: var(--border); color: var(--text-light); box-shadow: none; }
-    button.btn-red { background: var(--red); } button.btn-green { background: var(--green); } button.btn-yellow { background: var(--yellow); color: var(--text); } button.btn-secondary { background: var(--soft); color: var(--text); border: 1px solid var(--border); box-shadow: none; }
-    input, select, textarea { width: 100%; padding: 14px; margin-top: 6px; border-radius: 11px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); font: inherit; font-size: 16px; outline: none; } input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(36,122,90,.12); }
-    .farmer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .farmer-btn { background: var(--card-bg); color: var(--text); border: 1px solid var(--border); padding: 19px 12px; border-radius: 14px; font-size: 17px; font-weight: 700; box-shadow: 0 6px 16px rgba(31,70,52,.05); } .farmer-btn:active { border-color: var(--accent); background: var(--soft); }
-    .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 320px; margin: 28px auto; } .pin-btn { background: var(--card-bg); color: var(--text); font-size: 25px; font-weight: 800; padding: 19px; border-radius: 14px; border: 1px solid var(--border); box-shadow: 0 5px 14px rgba(31,70,52,.06); margin: 0; } .pin-btn:active { background: var(--soft); }
-    .pin-display { font-size: 44px; text-align: center; letter-spacing: 14px; margin-bottom: 10px; min-height: 56px; color: var(--accent); font-weight: 800; }
-    .roster-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; } .summary-card { padding: 16px; border-radius: 14px; font-size: 14px; } .progress-bar { height: 9px; background: var(--soft); border-radius: 99px; margin-top: 8px; overflow: hidden; } .progress-fill { height: 100%; background: var(--accent); border-radius: inherit; }
-    .roster-day { margin-bottom: 24px; } .roster-day h3 { margin-bottom: 12px; font-size: 13px; color: var(--text-light); border-bottom: 1px solid var(--border); padding-bottom: 8px; text-transform: uppercase; letter-spacing: .1em; } .slot-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; margin-bottom: 10px; border-radius: 14px; border-left: 5px solid var(--border); } .slot-item.active { border-left-color: var(--green); } .slot-item.scheduled { border-left-color: var(--yellow); } .slot-item.completed { opacity: .65; } .slot-item.missed { border-left-color: var(--red); }
-    .timer-display { font-size: 64px; text-align: center; font-variant-numeric: tabular-nums; font-weight: 800; margin: 30px 0; color: var(--text); letter-spacing: -.06em; } .flashing-banner { background: var(--red); color: white; padding: 15px; text-align: center; font-weight: 800; font-size: 17px; animation: flash 2s infinite; border-radius: 12px; margin-bottom: 20px; } @keyframes flash { 0%,100% { opacity: 1 } 50% { opacity: .82 } }
-    .text-green { color: var(--green); } .text-yellow { color: var(--yellow); } .text-red { color: var(--red); } .text-gray { color: var(--text-light); } .hidden { display: none !important; } .flex-row { display: flex; justify-content: space-between; align-items: center; } .badge { padding: 6px 11px; border-radius: 99px; font-size: 11px; font-weight: 800; background: var(--border); color: var(--text-light); text-transform: uppercase; } .badge.active { background: #d9f0df; color: var(--accent-dark); } .badge.pending { background: #faedcf; color: #94631e; } .badge.disputed { background: #f8dede; color: #9c3535; } .sync-banner { background: #faedcf; color: #94631e; border-bottom: 1px solid #edd9a9; padding: 12px; text-align: center; font-weight: 750; position: sticky; top: 58px; z-index: 99; }
-    @media (min-width: 720px) { #app-content { padding-top: 32px; } .farmer-grid { grid-template-columns: repeat(4, 1fr); } }
 
-  
-    /* Animations & SVGs */
-    #app-content { animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-    .nav-icon svg { transition: transform 0.2s; }
-    .nav-item.active .nav-icon svg { transform: scale(1.15); color: var(--accent); stroke-width: 2.5; }
-
-  /* Form Controls Fix (Inputs & Selects) */
-  input, select, textarea {
-    background: rgba(15, 23, 42, 0.7) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-    border-radius: 8px !important;
-    padding: 12px !important;
-    font-family: inherit !important;
-    width: 100%;
-    box-sizing: border-box;
-    backdrop-filter: blur(10px) !important;
-  }
-  
-  select option {
-    background: #0f172a !important; /* Dark solid bg for dropdown options */
-    color: #ffffff !important;
-    padding: 12px !important;
-  }
-  
-  input:focus, select:focus, textarea:focus {
-    outline: none !important;
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
-  }
-
-  /* Settings Buttons Contrast Fix */
-  .settings-btn, button[onclick="app.logout()"] {
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  }
-  
-  button[onclick="app.logout()"]:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
-  }
-  
-  /* Make sure primary buttons aren't overridden */
-  button.primary, button[style*="background: var(--red)"] {
-    color: #ffffff !important;
-  }
-
-  /* Additional Button Fixes */
-  .btn-secondary {
-    background: rgba(255, 255, 255, 0.1) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-  }
-  .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.2) !important;
-  }
-  
-  /* Select dropdown container fix to ensure text is visible */
-  select {
-    color: #ffffff !important;
-    background-color: rgba(15, 23, 42, 0.7) !important;
-  }
-  option {
-    color: #ffffff !important;
-    background-color: #0f172a !important;
-  }
-
-  /* Fix Login & PIN Pad Buttons */
-  .farmer-btn, .pin-btn {
-    background: rgba(15, 23, 42, 0.6) !important;
-    backdrop-filter: blur(16px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    color: #ffffff !important;
-    border-radius: 16px !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
-    transition: all 0.2s ease !important;
-  }
-  
-  .farmer-btn:hover, .pin-btn:hover {
-    background: rgba(255, 255, 255, 0.15) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    transform: translateY(-2px) !important;
-  }
-  
-  .farmer-btn:active, .pin-btn:active {
-    transform: translateY(0) scale(0.98) !important;
-    background: rgba(255, 255, 255, 0.25) !important;
-  }
-  
-  /* Make sure the BACK/DEL red and yellow buttons don't get fully overridden */
-  button[style*="background: var(--red)"] { background: rgba(239, 68, 68, 0.8) !important; }
-  button[style*="background: var(--yellow)"] { background: rgba(234, 179, 8, 0.8) !important; color: #ffffff !important; }
-</style>
-
-
-
-
-<!-- UI OVERHAUL -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --accent: #38bdf8 !important;
-    --accent-dark: #0ea5e9 !important;
-    --surface: rgba(15, 23, 42, 0.55) !important;
-    --border: rgba(255, 255, 255, 0.15) !important;
-    --text: #ffffff !important;
-    --text-light: rgba(255, 255, 255, 0.8) !important;
-  }
-  
-  body, button, input, h1, h2, h3 {
-    font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
-    letter-spacing: -0.02em;
-  }
-
-  /* Make all cards glassmorphic */
-  .summary-card, .slot-item, .card, .dispute-card, .log-entry {
-    background: var(--surface) !important;
-    backdrop-filter: blur(16px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 16px !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
-    color: white !important;
-    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-  }
-  
-  .summary-card:hover, .slot-item:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3) !important;
-    border: 1px solid rgba(255, 255, 255, 0.25) !important;
-  }
-
-  /* Make header and nav glassmorphic */
-  #main-header, #bottom-nav {
-    background: rgba(15, 23, 42, 0.4) !important;
-    backdrop-filter: blur(20px) saturate(200%) !important;
-    -webkit-backdrop-filter: blur(20px) saturate(200%) !important;
-    border-color: rgba(255,255,255,0.08) !important;
-  }
-  
-  #main-header { border-bottom: 1px solid var(--border) !important; }
-  #bottom-nav { border-top: 1px solid var(--border) !important; }
-
-  /* Buttons */
-  button {
-    border-radius: 12px !important;
-    font-weight: 600 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
-  }
-
-  /* Headings & Text */
-  h2, h3, strong { color: #ffffff !important; }
-  .text-gray { color: var(--text-light) !important; }
-  
-  /* The weather card */
-  div[style*="10, 185, 129"] {
-    background: rgba(16, 185, 129, 0.15) !important;
-    backdrop-filter: blur(12px) !important;
-    border: 1px solid rgba(16, 185, 129, 0.3) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
-  }
-  
-  /* Progress bars */
-  .progress-bar { background: rgba(0,0,0,0.3) !important; border: 1px solid rgba(255,255,255,0.1) !important; }
-  .progress-fill { background: linear-gradient(90deg, #38bdf8, #818cf8) !important; box-shadow: 0 0 10px rgba(56, 189, 248, 0.5) !important; }
-</style>
-</head>
-<body>
-
-  <header id="main-header" class="hidden">
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <h1 id="header-title">Water Sharing Board</h1>
-    </div>
-    <button class="settings-btn" onclick="app.navigate('settings')" aria-label="Settings"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button>
-  </header>
-  
-  <div id="sync-banner" class="sync-banner hidden">
-    Offline Mode Active. <span id="pending-count">0</span> changes pending. 
-    <button onclick="app.syncOfflineQueue()" style="width: auto; padding: 6px 12px; margin: 0 0 0 10px; font-size: 14px; background: var(--accent); color: white; border-radius: 6px; border: none; font-weight: bold;">Sync Now</button>
-  </div>
-
-  <main id="app-content"></main>
-
-  <nav id="bottom-nav" class="hidden">
-    <div class="nav-item" data-tab="roster" onclick="app.navigate('roster')">
-      <div class="nav-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></div>
-      <span>Roster</span>
-    </div>
-    <div class="nav-item" data-tab="pump" onclick="app.navigate('pump')">
-      <div class="nav-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg></div>
-      <span>My Turn</span>
-    </div>
-    <div class="nav-item" data-tab="swap" onclick="app.navigate('swap')">
-      <div class="nav-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg></div>
-      <span>Swap</span>
-      <span class="nav-badge hidden" id="swap-badge">0</span>
-    </div>
-    <div class="nav-item" data-tab="disputes" onclick="app.navigate('disputes')">
-      <div class="nav-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
-      <span>Alerts</span>
-      <span class="nav-badge hidden" id="dispute-badge">0</span>
-    </div>
-    <div class="nav-item" data-tab="log" onclick="app.navigate('log')">
-      <div class="nav-icon"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
-      <span>Log</span>
-    </div>
-  </nav>
-
-  <script>
     // --- SEED DATA & CONSTANTS ---
     const SEED_FARMERS = [
       { id: 'f1', name: 'Member 01', acres: 5, pin: '1111' },
@@ -410,34 +142,27 @@
         currentSlotTime.setHours(8, 0, 0, 0); 
         
         let dayCounter = 0;
+        let farmerIdx = 0;
         let slotIdCounter = 1;
-        
-        let pool = this.state.farmers.map(f => ({ id: f.id, rem: Math.round(f.weeklyHoursAllotted + (f.hoursOwed || 0)) }));
-        let total = pool.reduce((s, f) => s + f.rem, 0);
-        while(total < 56) { pool.sort((a,b)=>b.rem - a.rem)[0].rem++; total++; }
-        while(total > 56) { pool.sort((a,b)=>b.rem - a.rem)[0].rem--; total--; }
 
         while(dayCounter < 7) {
           let dailyHours = 0;
           while(dailyHours < 8) {
-            pool.sort((a,b) => b.rem - a.rem);
-            let target = pool.find(p => p.rem > 0);
-            if (!target) break;
-            
-            let duration = Math.min(2, target.rem, 8 - dailyHours);
+            let farmer = this.state.farmers[farmerIdx];
+            let duration = 2; 
             
             this.state.slots.push({
               id: 's' + slotIdCounter++,
-              farmerId: target.id,
+              farmerId: farmer.id,
               dayOfWeek: dayCounter,
               startTime: new Date(currentSlotTime).toISOString(),
               durationHours: duration,
               status: "scheduled"
             });
             
-            target.rem -= duration;
             currentSlotTime.setHours(currentSlotTime.getHours() + duration);
             dailyHours += duration;
+            farmerIdx = (farmerIdx + 1) % this.state.farmers.length;
           }
           dayCounter++;
           currentSlotTime = new Date(startOfWeek);
@@ -554,12 +279,11 @@
           this.enteredPin += digit;
           this.navigate('pin');
           if(this.enteredPin.length === 4) {
-            this.pinTimeout = setTimeout(() => this.verifyPin(), 200);
+            setTimeout(() => this.verifyPin(), 200);
           }
         }
       },
       clearPin() {
-        if (this.pinTimeout) clearTimeout(this.pinTimeout);
         this.enteredPin = this.enteredPin.slice(0, -1);
         this.navigate('pin');
       },
@@ -593,13 +317,17 @@
           let pct = (f.hoursUsed / f.weeklyHoursAllotted) * 100;
           if (pct > 100) pct = 100;
           html += `
-            <div class="summary-card">
-              <div class="flex-row" style="margin-bottom: 4px;">
-                <strong style="font-size: 15px;">${f.name}</strong>
-                <span class="text-gray">${f.hoursUsed.toFixed(1)} / ${f.weeklyHoursAllotted}h</span>
-              </div>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: ${pct}%"></div>
+            <div class="summary-card" style="display: flex; align-items: center; gap: 12px; padding: 16px;">
+                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(f.name)}&background=random&color=fff&rounded=true&size=44" alt="${f.name}" style="width: 44px; height: 44px; border-radius: 50%; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.8);">
+                <div style="flex: 1;">
+                  <div class="flex-row" style="margin-bottom: 6px;">
+                    <strong style="font-size: 15px;">${f.name}</strong>
+                    <span class="text-gray" style="font-weight: 500; font-size: 13px; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">${f.hoursUsed.toFixed(1)} / ${f.weeklyHoursAllotted}h</span>
+                  </div>
+                  <div class="progress-bar" style="height: 6px; border-radius: 6px;">
+                    <div class="progress-fill" style="width: ${pct}%; border-radius: 6px;"></div>
+                  </div>
+                </div>
               </div>
             </div>
           `;
@@ -784,8 +512,43 @@
         this.activeTimerInterval = setInterval(updateTimer, 1000);
       },
 
+      forceEndOtherTurn(activeSlotId) {
+        if(!confirm("Are you sure you want to forcefully terminate their pump session? This will log an alert.")) return;
+        
+        // Find the active session for the offending farmer
+        const activeSession = this.state.sessions.find(s => s.slotId === activeSlotId && !s.actualEnd);
+        if (activeSession) {
+          activeSession.actualEnd = new Date().toISOString();
+          
+          const totalMs = new Date(activeSession.actualEnd) - new Date(activeSession.actualStart);
+          const netMs = totalMs - (activeSession.powerCutMinutes * 60000);
+          let netHours = netMs / 3600000;
+          if(netHours < 0) netHours = 0;
+          
+          const farmer = this.state.farmers.find(f => f.id === activeSession.farmerId);
+          farmer.hoursUsed += netHours;
+          
+          const slot = this.state.slots.find(s => s.id === activeSlotId);
+          slot.status = 'completed';
+          
+          // Auto-file a dispute
+          const d = {
+            id: 'disp_' + Date.now(),
+            reportedBy: 'SYSTEM',
+            againstFarmerId: farmer.id,
+            reason: 'Overrun (Forcefully Terminated by next farmer)',
+            status: 'open',
+            createdAt: new Date().toISOString()
+          };
+          this.state.disputes.push(d);
+        }
+        
+        this.saveState();
+        alert('Turn forcefully ended. You may now start your pump.');
+        this.renderMyTurn();
+      },
+
       startPump(slotId) {
-        if(this.state.slots.some(s => s.status === 'active')) { alert("Pump is already in use!"); return; }
         const slot = this.state.slots.find(s => s.id === slotId);
         slot.status = 'active';
         
@@ -820,7 +583,7 @@
         const session = this.state.sessions.find(s => s.id === sessionId);
         const now = new Date();
         const downMs = now - new Date(session.powerCutActiveSince);
-        session.powerCutMinutes += Math.round(downMs / 60000) || (downMs > 10000 ? 1 : 0); // Credit at least 1 min for cuts > 10s
+        session.powerCutMinutes += Math.floor(downMs / 60000);
         session.powerCutActiveSince = null;
         
         const slot = this.state.slots.find(s => s.id === session.slotId);
@@ -871,6 +634,7 @@
             const fromFarmer = this.state.farmers.find(f => f.id === swap.fromFarmerId);
             const mySlot = this.state.slots.find(s => s.id === swap.toSlotId);
             const theirSlot = this.state.slots.find(s => s.id === swap.fromSlotId);
+            if (!mySlot || !theirSlot) return; // Skip rendering obsolete swaps
             
             html += `
               <div class="card" style="border-left: 4px solid var(--yellow)">
@@ -966,7 +730,16 @@
         const mySlot = this.state.slots.find(s => s.id === swap.toSlotId);
         const theirSlot = this.state.slots.find(s => s.id === swap.fromSlotId);
         
-        if(mySlot.status !== 'scheduled' || theirSlot.status !== 'scheduled') {
+        if (!mySlot || !theirSlot || mySlot.status !== 'scheduled' || theirSlot.status !== 'scheduled') {
+          alert('Cannot complete swap because one of these turns has already passed or been deleted.');
+          swap.status = 'rejected';
+          this.saveState();
+          this.renderSwap();
+          return;
+        }
+        
+        if (mySlot.farmerId !== this.currentUser.id || theirSlot.farmerId !== swap.fromFarmerId) {
+          alert('Cannot complete swap because one of these slots has already been swapped with someone else.');
           alert('Cannot complete swap because one of these turns has already passed.');
           swap.status = 'rejected';
           this.saveState();
@@ -1165,7 +938,7 @@
 
           <div class="card">
             <h3 style="color: var(--text-light); font-size: 14px; text-transform: uppercase;">Admin Controls</h3>
-            <button class="btn-secondary" style="background: white;" onclick="app.exportCSV()">Download Log Data (CSV)</button>
+            <button class="btn-secondary" onclick="app.exportCSV()">Download Log Data (CSV)</button>
             <button class="btn-red" style="margin-top:16px; opacity: 0.9;" onclick="app.hardReset()">Hard Reset System</button>
             <p style="text-align: center; margin-top: 16px; font-size: 12px; color: var(--text-light);">Prototype v2.0</p>
           </div>
@@ -1220,6 +993,4 @@
 
     // Initialize App
     window.onload = () => app.init();
-  </script>
-</body>
-</html>
+  
